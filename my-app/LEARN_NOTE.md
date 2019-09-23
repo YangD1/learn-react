@@ -172,8 +172,32 @@ React 是一个声明式，高效且灵活的用于构建用户界面的 JavaScr
 > 在 JSX 中你可以任意使用 JavaScript 表达式，只需要用一个大括号`{}`把表达式括起来。每一个 React 元素事实上都是一个 JavaScript 对象，你可以在你的程序中把它当保存在变量中或者作为参数传递。
 也可以在React中使用自己的自定义React组件，比如在别的组件中使用刚刚示例中的组件`<ShoppingList />`，这样可以用来构建复杂的UI界面。
 
+> React 监听方法命名规范，代表事件的监听命名为：`on[Event]`，将处理事件的监听方法命名为：`handle[Event]`。
 
+## 威慑呢们不可变性在React中非常重要
+（文档中的内容，基本是抄一遍加深印象）
+一般来说，有两种改变数据的方式。第一种方式是直接修改变量的值，第二种方式是使用新的一份数据替换旧数据。
 
+### 直接修改数据
+```javascript
+var player = { score: 1, name: 'Jeff' };
+player.score = 2;
+// player 修改后的值为 {score: 2, name: 'Jeff'}
+```
 
+### 新数据替换旧数据
+```javascript
+var player = { score: 1, name: 'Jeff' };
+var newPlayer = Object.assign({}, player, { score: 2});
+// player 的值没有改变，但是 newPlayer 的值是 {score: 2, name: 'Jeff'}
 
+// 使用对象展开语法(Spread syntax)，就可以写成:
+// var newPlayer = {...player, score: 2};
+```
+> Object.assign() 拼接一个对象。
+
+不直接修改（或改变底层数据）这种方式和前一种方式的结果是一样的，这种方式有以下几点好处：
+- 简化复杂的功能（不可变性使得复杂的特性更容易实现。）
+- 追踪数据的改变（如果直接修改数据，那么就很难跟踪到数据的改变，减少因为比较而发生的遍历的性能消耗。）
+- 确定在 React 中何时重新渲染（调整渲染策略，React的性能优化相关。）
 
