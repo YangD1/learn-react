@@ -3,10 +3,20 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 class Square extends React.Component {
+  constructor(props) {
+    // 类似于在 ES5 中使用 call，含有构造函数的 React 组件中，构造函数都必须以 Super 开头
+    super(props);
+    this.state = {
+      value: null,
+    };
+  }
   render() {
     return (
-      <button className="square">
-        {this.props.value}
+      <button 
+        className="square" 
+        onClick={() => this.setState({value: 'X'})}
+      >
+        {this.state.value}
       </button>
     );
   }
