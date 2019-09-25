@@ -201,3 +201,6 @@ var newPlayer = Object.assign({}, player, { score: 2});
 - 追踪数据的改变（如果直接修改数据，那么就很难跟踪到数据的改变，减少因为比较而发生的遍历的性能消耗。）
 - 确定在 React 中何时重新渲染（调整渲染策略，React的性能优化相关。）
 
+
+学习笔记：
+![avatar](./images/WX20190925-164547.png)
