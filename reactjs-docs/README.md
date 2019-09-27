@@ -144,7 +144,7 @@ const element = {
 ```
 > 组件是由元素构成的，两个并不是一个概念。
 
-## 讲一个元素渲染为 DOM
+## 将一个元素渲染为 DOM
 假设一个根节点
 ```html
 <div id="root"></div>
@@ -168,3 +168,82 @@ React 元素是不可变对象，创建了就无法更改它的子元素或者�
 
 ## React 只更新它需要更新的部分
 React DOM 会将元素和它的子元素与它们之前的状态进行比较，只进行必要的更新，来使 DOM 达到预期的状态。
+
+# 组件 & Props
+组件允许你将 UI 拆分为独立可复用的代码片段，并对每个片段进行独立构思。
+
+## 概念
+组件，从概念上类似于 JavaScript 函数。它接受任意的入参（props）,并返回用于描述页面展示内容的 React 元素。
+
+## 函数组件与 class 组件
+定义组件最简单的方式就是编写 JavaScript 函数：
+```javascript
+funciton Welcome(props){
+  return <h1>Hello, {props.name}</h1>;
+}
+```
+该函数是一个有效的 React 组件，因为它接收唯一带有数据的 “props”（代表属性）对象与并返回一个 React 元素。这类组件被称为“函数组件”，因为它本质上就是 JavaScript 函数。(因为这个结构和数据交互逻辑达到了组件所需的程度)
+
+还有一种比较常见的方式（ES6 class）:
+```javascript
+class Welcome extends React.Component {
+  render() {
+    // 注意这里相对于函数组件的区别，props对象由this访问
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+```
+组件等效于上面的函数组件
+
+## 渲染组件
+React 元素除了 HTML 标签还可以是用户自定义的组件：
+```javascript
+// 调用用户自定义声明好的 Welcome 组件
+const element = <Welcome  name="Sara" />;
+```
+当 React 元素为用户自定义组件时，它会将 JSX 所接收的属性（attributes）转换为单个对象传递给组件，这个对象被称之为 “props”。（比如上面代码中的`name='Sara'`）
+
+此时调用`ReactDOM.render()`将会渲染出组件中的 React 元素，按照传入的 props 显示相应的内容。
+
+发生的步骤如下：
+1. 调用 `ReactDOM.render()` 函数，并传入`<Welcome name="Sara" />`(`element`变量) 作为参数。
+2. React 调用 `Welcome` 组件，并将 `{name: 'Sara'}`(组件标签中的`name='Sara'`属性转的单个对象) 作为 props 传入。
+3. `Welcome` 组件将 `<h1>Hello, Sara</h1>` 元素作为返回值。
+4. `ReactDOM`将`DOM`高效地更新为`<h1>Hello, Sara</h1>`(返回的 HTML 元素和 React 元素差不多，除了我们自定义的内容由 props 决定了。)
+
+> 注意： **组件名称必须以大写开头**<br />
+React 将以小写字母开头的组件,视为原生 DOM 标签。<br />
+例如，`<div />` 代表 HTML 的 div 标签，而 `<Welcome />` 则代表一个组件，并且需在作用域内使用 Welcome。
+
+## 组合组件
+组件可以在其输出中引用其他组件。这就可以让我们用同一组件来抽象出任意层次的细节。（在组件中组合别的组件来渲染出所预期的 DOM） 。按钮，表单，对话框，甚至整个屏幕的内容：在 React 应用程序中，这些通常都会以组件的形式表示。（组件尽可能的简单，通过组合使用组件来尽可能的解耦）
+
+```javascript
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+
+function App() {
+  return (
+    <div>
+      // 这里使用了三个上面定义的 Welcome 组件,组成了新的 App组件
+      <Welcome name="Sara" />
+      <Welcome name="Cahal" />
+      <Welcome name="Edite" />
+    </div>
+  );
+}
+
+ReactDOM.render(
+  <App />,  // 这个组件里包含了三个 Welcome 组件
+  document.getElementById('root')
+);
+```
+
+## 提取(拆分)组件
+将组件拆分为更小的组件，提取组件可能是一件繁重的工作，但是，在大型应用中，构建可复用组件库是完全值得的。(拆分的越细复用程度越高，唯一缺点就是组件数量多，需要管理好维护好拆分的组件。)
+
+## Props 的只读属性
+组件无论是使用函数声明还是通过 class 声明，都决不能修改自身的 props。
+> 所有 React 组件都必须像纯函数(相同的入参返回相同的结果，而不是在函数内部改变参数内容)一样保护它们的 props 不被更改。
+
