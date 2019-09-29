@@ -245,5 +245,139 @@ ReactDOM.render(
 
 ## Props 的只读属性
 组件无论是使用函数声明还是通过 class 声明，都决不能修改自身的 props。
-> 所有 React 组件都必须像纯函数(相同的入参返回相同的结果，而不是在函数内部改变参数内容)一样保护它们的 props 不被更改。
+> 所有 React 组件都必须像纯函数（相同的入参返回相同的结果，而不是在函数内部改变参数内容）一样保护它们的 props 不被更改。
+
+# State & 生命周期
+> 个人的理解中，生命周期就是一个组件的状态，状态改变过程中可能会触发处理函数，比如Vue的`created`,`mounted`, `destroyed`...等等，也有组件状态发生变化时触发的生命周期函数`updated`...等等，这些函数也叫生命周期钩子，在不同的阶段不同的组件状态时添加自己的处理代码。
+
+之前通过`ReactDOM.render()`(重新渲染)来修改我们想要渲染的元素。现在可以通过给组件添加`state`来实现组件的自我更新，`state` 与 `props` 类似，但是 `state` 是私有的，并且完全受控于当前组件。
+
+官网有一个Clock组件示例：
+```javascript
+// 函数组件
+function Clock(props) {
+  return (
+    <div>
+      <h1>Hello, world!</h1>
+      <h2>It is {props.date.toLocaleTimeString()}.</h2>
+    </div>
+  );
+}
+
+function tick() {
+  ReactDOM.render(
+    <Clock date={new Date()} />,
+    document.getElementById('root')
+  );
+}
+
+setInterval(tick, 1000);
+```
+函数式方法渲染实现一个计时时钟
+
+```javascript
+// 使用state和生命周期方法实现组件自我管理，使用ES6 class，将函数组件转换成 class 组件
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date()};
+  }
+
+  // 组件挂载完毕(mount)时设置计时器
+  componentDidMount() {
+    this.timerID = setInterval(
+      () => this.tick(),
+      1000
+    );
+  }
+
+  // 组件卸载(unmount)时清除计时器
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+
+  // mount 设置的计时器中调用的方法
+  tick() {
+    this.setState({
+      date: new Date()
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Hello, world!</h1>
+        <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Clock />,
+  document.getElementById('root')
+);
+```
+这里需要注意的是我们需要继承`React.Component`来实现 **class组件**，组件内部的参数由原先函数组件中的`props`的入参变成了`this.props`属性，**class组件** 中需要添加一个 `render()` 方法，这个方法用来确定展示什么。
+
+## 正确的使用 State
+### 不要直接修改 State
+```javascript
+// Wrong
+this.state.comment = 'Hello';
+```
+正确如下：
+```javascript
+// Correct
+this.setState({comment: 'Hello'});
+```
+构造函数(constructor)是唯一可以给 `this.state` 赋值的地方。
+
+### State 的更新可能是异步的
+`this.props` 和 `this.state` 可能会异步更新，不能依赖其来更新状态。
+
+错误的用法
+```javascript
+this.setState({
+  cunter: this.state.counter + this.props.increment
+})
+```
+正确的用法
+```javascript
+// 将 setState() 接受一个函数而不是对象，函数用上 state 作为第一个参数，将此次更新被应用时的 props 作为第二个参数：
+this.setState(state, props) => ({
+  cunter: state.counter + props.increment
+})
+```
+> 这里的`setState()`和VUE的`data()`有什么类似的地方么？
+
+## State 的更新会被合并
+当你调用 `setState()`的时候，React 会把你提供的对象合并到当前的 state。
+> 这段没看明白，稍后在深入研究
+
+## 数据是向下流动的
+(俗称数据是下流的)又叫单向数据流，这个单向是从上（父级）到下（子级）
+> **官方的定义说明**：<br />通常会被叫做“自上而下”或是“单向”的数据流。任何的 state 总是所属于特定的组件，而且从该 state 派生的任何数据或 UI 只能影响树中“低于”它们的组件。<br />
+如果你把一个以组件构成的树想象成一个 props 的数据瀑布的话，那么每一个组件的 state 就像是在任意一点上给瀑布增加额外的水源，但是它只能向下流动。
+
+不管是父组件还是子组件都不知道某个组件是有状态还是无状态的，也不关心是函数组件还是class组件。
+`state` 是局部的，封装在组件中的，其他组件都无法访问，除了组件本身。
+
+但是`state`并不是自闭的，它可以作为 `props` (组件设定的可接受的参数) 向下传递到它的子组件中：
+```javascript
+// 原生元素中
+<h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+
+// 自定义组件中, 假设和上面一样都在一个组件中使用了，这个组件就是它们的父组件
+<FormattedDate date={this.state.date} />
+// 这个自定义组件是这么定义的
+funciton FormattedDate(props){
+  return <h2>It is {props.data.toLocaleTimeString()}.</h2>
+}
+```
+> 每个子组件都是相互独立的，哪怕在一个组件中重复使用这个子组件，这个子组件也是相互独立的。根据需要选择有状态的组件和无状态的组件。
+
+
+
+
 
