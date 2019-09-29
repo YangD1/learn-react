@@ -1,5 +1,6 @@
 # React 官网文档学习
 [文档地址(v16.9.0)](https://zh-hans.reactjs.org/docs/getting-started.html)
+>**说明:** 此文档为个人学习官网文档的笔记，大部分为官网的内容或是内容经过自己理解的文字，如真有人参阅此文档建议从官网学习后看看我们之间理解的出入，其中会加入我自己的理解，由此便会打乱学习顺序，不便与按步骤学习，软件也都有时效性，这篇文档之后也不会在学习结束后以版本为单位进行更新（那是另开一篇的事情）。
 # 核心概念
 ## JSX
 ### 什么是JSX：
@@ -17,7 +18,7 @@ ReactDOM.render(
 )
 ```
 注意这里的 `{name}` 在JSX中用大括号`{}`来使用表达式。
-> 在 JSX 语法中，可以在打括号内放置任何有效的 JavaScript 表达式。<br />
+> 在 JSX 语法中，可以在大括号内放置任何有效的 JavaScript 表达式。<br />
 例如: `2+2` 一个计算表达式, `user.firstName` 访问一个对象属性, `formatName(user)` 函数调用
 
 函数使用示例：
@@ -377,7 +378,40 @@ funciton FormattedDate(props){
 ```
 > 每个子组件都是相互独立的，哪怕在一个组件中重复使用这个子组件，这个子组件也是相互独立的。根据需要选择有状态的组件和无状态的组件。
 
+## 生命周期详细理解
+首先官方给了一个生命周期图表：http://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
 
+图示如下：
+![avatar](./images/2590688E-8EF6-46E6-9763-1829115A013D.png)
+> **红框为不常用的生命周期**，生命周期图以 React 版本为主，如今我学习到的版本已经阉割了一些生命周期，例如：`UNSAFE_componentWillMount()`(在挂载`render()`之前被调用，已被 `constructor()` 代替了初始化的使命)
 
+相比VUE粒度更细的生命周期，确实要简单很多
 
+### React 的生命周期流程
+一个组件的生命周期：
+```
+挂载(mount) -> 更新(update) -> 卸载(unmount)
+```
+挂载阶段：
+- constructor()
+- static getDerivedStateFromProps()
+- render()
+- componentDidMount()
+> (阶段都是自上而下)
+
+更新阶段：
+> **更新条件** 当组件的`props`或`state`发生变化时会触发更新
+
+组件更新的生命周期调用顺序如下:
+- static getDerivedStateFromProps()
+- shouldComponentUpdate()
+- render()
+- getSnapshotBeforeUpdate()
+- componentDidUpdate()
+
+卸载阶段：
+- componentWillUnmount()
+> 卸载完成后组件会从DOM中移除，移除时执行上面的生命周期函数
+
+更具体的参阅 [React.Component](https://zh-hans.reactjs.org/docs/react-component.html)
 
