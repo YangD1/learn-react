@@ -7,7 +7,7 @@
 ![avatar](./images/WX20190925-171841.png)
 JSX 是 React 重要的一个特性，可以用于更直观友好的管理代码。（不过当初我第一次使用 J）
 
-### JSX 中潜入表达式
+### JSX 中嵌入表达式
 ```javascript
 const name = "YonDee";
 const element = <h1>Hello, {name}</h1>;
@@ -415,3 +415,72 @@ funciton FormattedDate(props){
 
 更具体的参阅 [React.Component](https://zh-hans.reactjs.org/docs/react-component.html)
 
+## 事件处理
+概念：React 元素的事件处理和 DOM 元素的很相似，但是有一点语法上的不同：
+- React 事件的命名采用小驼峰式（camelCase），而不是纯小写。
+- 使用 JSX 语法时你需要传入一个函数作为事件处理函数，而不是一个字符串。
+
+对比下面的代码示例更好理解：
+- 在一般的 HTML 中，给元素添加事件处理方法
+```html
+<button onclick="activateLasers()">
+  Activate Lasers
+</button>
+// 改成 jsx 形式很简单，将
+```
+React 中的事件处理函数绑定只需要将上面的`onclick="activateLasers()"`改为`onClick={activateLasers()}`,注意这里的`onclick`和后者(react)的`onClick`是不同的，两者绑定的都是同一个事件。
+
+在一般的html中，例如`<a>`标签的行为可以使用`href="return false"`来取消默认行为，而在react中则必须要在事件绑定的函数中**显示**使用`event.preventDefault()`来取消默认行为。
+
+例如：
+- 一个取消了a标签默认行为的组件
+```js
+function ActionLink() {
+  function handleClick(e) {
+    e.preventDefault();
+    console.log('The link was clicked.');
+  }
+
+  return (
+    <a href="#" onClick={handleClick}>
+      Click me
+    </a>
+  );
+}
+```
+> 这里的 `e` 是一个合成事件
+
+在使用 ES6 时，应该将事件处理函数声明为class中的方法。
+```js
+class Toggle extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {isToggleOn: true};
+
+    // 为了在回调中使用 `this`，这个绑定是必不可少的，不然this是undefined
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  // 声明后在render返回的jsx对象中绑定了这个方法
+  handleClick() {
+    this.setState(state => ({
+      isToggleOn: !state.isToggleOn
+    }));
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick}>
+        {this.state.isToggleOn ? 'ON' : 'OFF'}
+      </button>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Toggle />,
+  document.getElementById('root')
+);
+```
+> 注意在 JavaScript 中的 class 的方法，因为js的函数工作原理，默认不会绑定 this。通常情况下，如果你没有在方法后面添加 `()`，例如 `onClick={this.handleClick}`，你应该为这个方法绑定 `this`。
+> 一定要注意this带来的影响，在文档种被反复提到并且提供了几种解决方法，上文摘自官网的代码便是其中一种方案。
