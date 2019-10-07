@@ -484,3 +484,164 @@ ReactDOM.render(
 ```
 > 注意在 JavaScript 中的 class 的方法，因为js的函数工作原理，默认不会绑定 this。通常情况下，如果你没有在方法后面添加 `()`，例如 `onClick={this.handleClick}`，你应该为这个方法绑定 `this`。
 > 一定要注意this带来的影响，在文档种被反复提到并且提供了几种解决方法，上文摘自官网的代码便是其中一种方案。
+
+## 条件渲染
+在vue中用过也就不再摘抄官网的概念的，一言以蔽之：用（组件的）状态控制组件的渲染。
+
+提到条件，联想到JavaScript ，第一个想到的自然是`if`
+
+所以在 react 中 条件渲染是这样的：
+```js
+function Greeting(props) {
+  const isLoggedIn = props.isLoggedIn;
+  if (isLoggedIn) {
+    return <UserGreeting />;
+  }
+  return <GuestGreeting />;
+}
+
+ReactDOM.render(
+  // Try changing to isLoggedIn={true}:
+  <Greeting isLoggedIn={false} />,
+  document.getElementById('root')
+);
+```
+上面的组件会根据`isLoggedIn`中的值来选择如何渲染组件
+> 这里又要开始联想vue了，vue是在元素中使用了`v-if`指令来进行条件渲染的，而reactjs的用法更加倾向于原生js的用法，这里是直接在jsx的元素中放入判断表达式。
+
+### 元素变量
+```js
+class LoginControl extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleLoginClick = this.handleLoginClick.bind(this);
+    this.handleLogoutClick = this.handleLogoutClick.bind(this);
+    this.state = {isLoggedIn: false};
+  }
+
+  handleLoginClick() {
+    this.setState({isLoggedIn: true});
+  }
+
+  handleLogoutClick() {
+    this.setState({isLoggedIn: false});
+  }
+
+  render() {
+    const isLoggedIn = this.state.isLoggedIn;
+    let button;
+
+  // 条件渲染，并且使用功变量来存储元素，因为JSX也算是表达式，故此用法
+    if (isLoggedIn) {
+      button = <LogoutButton onClick={this.handleLogoutClick} />;
+    } else {
+      button = <LoginButton onClick={this.handleLoginClick} />;
+    }
+
+    return (
+      <div>
+        <Greeting isLoggedIn={isLoggedIn} />
+        {button}
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <LoginControl />,
+  document.getElementById('root')
+);
+```
+
+### 与（&&）运算符
+一般用在js中的表达式在JSX中同样可行
+```js
+function Mailbox(props) {
+  const unreadMessages = props.unreadMessages;
+  // 里面的 && 就代替了 if，在没有else条件下这样更加简洁
+  return (
+    <div>
+      <h1>Hello!</h1>
+      {unreadMessages.length > 0 &&
+        <h2>
+          You have {unreadMessages.length} unread messages.
+        </h2>
+      }
+    </div>
+  );
+}
+
+const messages = ['React', 'Re: React', 'Re:Re: React'];
+ReactDOM.render(
+  <Mailbox unreadMessages={messages} />,
+  document.getElementById('root')
+);
+```
+> 记住在jsx中运行表达式，需要写在大括号`{}`中
+### 三目运算符 `condition ? true : false`
+```js
+render() {
+  const isLoggedIn = this.state.isLoggedIn;
+  return (
+    <div>
+      {isLoggedIn ? (
+        <LogoutButton onClick={this.handleLogoutClick} />
+      ) : (
+        <LoginButton onClick={this.handleLoginClick} />
+      )}
+    </div>
+  );
+}
+```
+一个复杂的三目运算，不过看起来不是很直观
+
+### 阻止组件渲染
+简单来说就是组件根据状态返回值，如果状态表示为不需要渲染，那么`render`方法直接返回`null`，组件将不会被渲染（即使已经被别的组件渲染）。
+
+```js
+function WarningBanner(props) {
+  // 如果不需要渲染则组件返回一个null
+  if (!props.warn) {
+    return null;
+  }
+
+  return (
+    <div className="warning">
+      Warning!
+    </div>
+  );
+}
+
+class Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {showWarning: true};
+    this.handleToggleClick = this.handleToggleClick.bind(this);
+  }
+
+  handleToggleClick() {
+    this.setState(state => ({
+      showWarning: !state.showWarning
+    }));
+  }
+
+  render() {
+    // 下面 WarningBanner 的条件决定了组件是否被渲染
+    return (
+      <div>
+        <WarningBanner warn={this.state.showWarning} />
+        <button onClick={this.handleToggleClick}>
+          {this.state.showWarning ? 'Hide' : 'Show'}
+        </button>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(
+  <Page />,
+  document.getElementById('root')
+);
+```
+
+> 在组件的render方法中返回null并不会影响组件的生命周期。
