@@ -645,3 +645,96 @@ ReactDOM.render(
 ```
 
 > 在组件的render方法中返回null并不会影响组件的生命周期。
+
+## 列表 & Key
+### 渲染多个组件
+通过使用 `{}` 在 JSX 内构建一个元素集合。
+```js
+const numbers = [1, 2, 3, 4, 5];
+const listItems = numbers.map((numbers) =>
+  <li>{numbers}</li>
+);
+
+ReactDOM.render(
+  <ul>{listItems}</ul>,
+  document.getElementById('root')
+);
+```
+这里的`render()`函数使用了`listItems`变量，这个变量存储了一个 JSX 元素集合， 这个集合由数组`map()`方法遍历。组件会渲染出一个1-5的符号列表。
+
+### 基础列表组件
+```js
+function NumberList(props) {
+  const numbers = props.numbers;
+  const listItems = numbers.map((number) =>
+    <li key={number.toString()}>
+      {number}
+    </li>
+  );
+  return (
+    <ul>{listItems}</ul>
+  );
+}
+
+const numbers = [1, 2, 3, 4, 5];
+ReactDOM.render(
+  <NumberList numbers={numbers} />,
+  document.getElementById('root')
+);
+```
+这里创建了一个`NumberList`列表组件，在遍历创建`<li>`元素的时候一定要加上`key`
+> 和Vue的`:key`的意思差不多
+
+### key
+key 帮助 React 识别 React 识别哪些元素改变了（比如：添加，删除）。因此应该为数组中的每一个元素赋予一个确定的标识，这个标识就是key。
+
+key 最好是这个元素在列表中拥有的一个独一无二的字符串，比如数据的id（在万不得已的情况下，不建议使用数组的下标，会导致性能变差，还有引起组件状态的问题）。
+
+> 默认情况下（不指定 key，会有警告），React 将默认使用索引用作为列表项目的 key 值。在高级指引中有对于key的进一步探讨。
+
+### 用 key 提取组件
+正确使用key的方式
+```js
+function ListItem(props) {
+  // 正确！这里不需要指定 key：
+  return <li>{props.value}</li>;
+}
+
+function NumberList(props) {
+  const numbers = props.numbers;
+  const listItems = numbers.map((number) =>
+    // 正确！key 应该在数组的上下文中被指定
+    <ListItem key={number.toString()}
+              value={number} />
+
+  );
+  return (
+    <ul>
+      {listItems}
+    </ul>
+  );
+}
+
+const numbers = [1, 2, 3, 4, 5];
+ReactDOM.render(
+  <NumberList numbers={numbers} />,
+  document.getElementById('root')
+);
+```
+一个好的经验法则是：在 map() 方法中的元素需要设置 key 属性。
+
+### key 只是在兄弟节点之间必须唯一
+数组元素中使用的 key 在其兄弟节点之间应该是独一无二的。然而，它们不需要是全局唯一的（只需要在自己的同级元素中唯一即可）。
+
+key 会传递给 react ，但不会传递给你的组件，如果组件中需要 key 的属性值，则需要别的属性命名来显式传递这个值：
+```js
+const content = posts.map((post) =>
+  <Post
+    key={post.id}
+    id={post.id}
+    title={post.title} />
+);
+```
+### JSX 中嵌入 map()
+JSX 允许在大括号中嵌入任何表达式，那自然也可以嵌入`map()`函数
+
