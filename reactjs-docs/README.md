@@ -1,6 +1,6 @@
 # React 官网文档学习 - 核心概念
 [文档地址(v16.9.0)](https://zh-hans.reactjs.org/docs/getting-started.html)
->**说明:** 此文档为个人学习官网文档的笔记，大部分为官网的内容或是内容经过自己理解的文字，如真有人参阅此文档建议从官网学习后看看我们之间理解的出入，其中会加入我自己的理解，由此便会打乱学习顺序，不便与按步骤学习，软件也都有时效性，这篇文档之后也不会在学习结束后以版本为单位进行更新（那是另开一篇的事情）。
+>**说明:** 此文档为个人学习官网文档的笔记，大部分为官网的内容或是内容经过自己理解的文字。没有什么学习价值。
 # 核心概念
 ## JSX
 ### 什么是JSX：
@@ -759,5 +759,63 @@ React 有十分强大的组合模式。我们推荐使用组合而非继承来�
 有些组件无法提前知晓它们子组件的具体内容。
 
 这种组件适合使用一种特殊的 `children` prop 将子组件传递到渲染结果中。
+```js
+function FancyBorder(props){
+  return (
+    <div className={'FancyBOrder FancyBorder-' + props.color}>
+      {props.children}
+    </div>
+  )
+}
+```
+上面的组件可以通过JSX让别的组件作为子组件。这种组件一般充当容器的作用，定义外层的结构形式，可以向里面塞任意的内容。
+```js
+function WelcomDialog() {
+  return (
+    <FancyBorder color="blue">
+      <h1 className="Dialog=title">
+        Welcome
+      </h1>
+      <p className="Dialog-message">
+        Thank you for visiting our spacecraft!
+      </p>
+    </FancyBorder>
+  )
+}
+```
+
+或者容器中需要插入好几个预留的组件位置，像插槽一样传入JSX。
+```js
+function SplitPane(props) {
+  // 容器预留了一些“插槽”
+  return (
+    <div className="SplitPane">
+      <div className="SplitPane-left">
+        {props.left}
+      </div>
+      <div className="SplitPane-right">
+        {props.right}
+      </div>
+    </div>
+  );
+}
+
+// 这里作为参数传入了子组件
+function App() {
+  return (
+    <SplitPane
+      left={
+        <Contacts />
+      }
+      right={
+        <Chat />
+      } />
+  );
+}
+```
+**引述官方**：
+`<Contacts />` 和 `<Chat />` 之类的 React 元素本质就是对象（object）,所以可以把它们当作props，像其他数据一个传递。这种方法可能使你想起别的库中“槽”（slot）的概念，但在 React 中没有“槽”这一概念的限制，你可以将任何东西作为 props 进行传递。
+
+组合用法还有很多灵活的示例参考官方页面，例如上面两种用法就可以组合使用渲染出自己想要的元素。
 
 一般不用继承来构建组件层次。
