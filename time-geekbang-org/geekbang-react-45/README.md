@@ -125,3 +125,37 @@ JSX 的优点：
 3. 典型场景：性能优化
 
 ## 理解 Virtual DOM 及 Key 属性的作用
+Vritual DOM 虚拟DOM，先操作虚拟DOM，只更新diff（tree的diff，详情参考相关算法）的部分。React的diff算法的时间复杂度是O(n)，广度优先分层比较。
+
+### 虚拟 DOM 的两个假设
+1. 组件的 DOM 结构是相对稳定的。
+2. 类型相同的兄弟节点可以被唯一表识(`key`，提升性能)。
+
+## 组件复用的另外两种形式：高阶组件（HOC）和函数（function）作为子组件
+### 高阶组件
+高阶组件接受组件作为参数，返回新的组件。（一般高阶组件自己不展示ui，而是为传入封装的组件提供功能和数据）
+
+高阶组件可以自己获取外部资源，然后经过处理后传递给我们传入封装的组件。
+![avatar](./images/QQ20191015-171517.png)
+
+### 函数作为子组件
+```js
+class MyComponent extends React.Component {
+  render() {
+    return {
+      <div>
+        {this.props.children('text')}
+      </div>
+    }
+  }
+}
+
+<MyComponent>
+  {(name) => (
+    <div>{name}</div>
+  )}
+</Mycomponent>
+```
+> children 是 React 组件的一个特殊内置属性，<Comp>xxx</Comp> 里的 xxx 部分会作为 children 传递给 Comp 组件，如果 xxx 是函数，那么 Comp 里主动调用它去得到结果。
+
+[高阶组件官方文档](https://react.docschina.org/docs/higher-order-components.html)
