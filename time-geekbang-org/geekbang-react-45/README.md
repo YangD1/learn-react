@@ -21,7 +21,8 @@ ReactDOM.render(
 	<CommentBox />
 )
 ```
-个人理解：
+个人理解：  
+
 首先我声明了一个CommentBox的类， 这个类继承了Component类，我们向这个类中传递一个方法参数，方法为`render(){}`，方法中使用html标签写了一个组件，组件中嵌套了组件 CommentList 和 CommentForm 。值得注意的是按照平常的写法标签中的class写成了Element中的className属性。
 
 > ES5利用原型链来实现继承，在ES6中使用class和extends语法糖，旨在更加清晰方便的呈现继承关系
@@ -159,3 +160,40 @@ class MyComponent extends React.Component {
 > children 是 React 组件的一个特殊内置属性，`<Comp>xxx</Comp>` 里的 xxx 部分会作为 children 传递给 Comp 组件，如果 xxx 是函数，那么 Comp 里主动调用它去得到结果。
 
 [高阶组件官方文档](https://react.docschina.org/docs/higher-order-components.html)
+
+
+## 理解新的Context API (React 16.3)
+解决组件间通信的问题（组件之间一层层传递通信太麻烦）,很多react的全局状态包都使用了这个API!
+
+> 值得注意的是这不是一个新特性，之前只是作为实验版本存在于React中。
+
+创建一个react上下文：
+```js
+// React.createContext() 接受任意一个类型的参数
+const ThemeContext = React.createContext('light')
+
+class App extends extends React.Conponent {
+  render() {
+    // 这里的`ThemeContext.Provider` 定义了value属性，其子组件可以得到这个属性, 属性发生变化，也可以改变
+    return (
+      <ThemeContext.Provider value="dark">
+        <ThemeButton />
+      </ThemeContext.Provider>
+    )
+  }
+}
+
+function ThemedButton(props) {
+  return (
+    // 通过 Consumer 拿到外层的状态数据
+    <ThemeContext.Consumer>
+      {theme => <Button {...props} theme={theme} />}
+    </ThemeContext.COnsumer>
+  );
+}
+```
+如果自己定义外部属性，那么无法实现主动监听，无法实时更新相应的状态。这就是 Context API 的好处。
+> 放在Provider组件内使用的子组件才会共享来自Context API定义的状态。<br />
+> 如果自己的应用过于复杂那么使用 Redux 这样的状态容器来管理状态更加合适。或者说用到状态容器的大部分情况下都会使用 Redux（暂时）。
+> React 中的 Context API 类似于 Vue 中的[依赖注入](https://cn.vuejs.org/v2/guide/components-edge-cases.html#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5)，当然 Vue 也有相应的状态容器 Vuex。
+
