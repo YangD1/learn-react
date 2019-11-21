@@ -157,7 +157,6 @@ class MyComponent extends React.Component {
   )}
 </Mycomponent>
 ```
-<<<<<<< HEAD
 > children 是 React 组件的一个特殊内置属性，`<Comp>xxx</Comp>` 里的 xxx 部分会作为 children 传递给 Comp 组件，如果 xxx 是函数，那么 Comp 里主动调用它去得到结果。
 
 [高阶组件官方文档](https://react.docschina.org/docs/higher-order-components.html)
@@ -221,3 +220,17 @@ function ThemedButton(props) {
 6. ESLint - 语法检查
 
 每个包都有一定的生态圈，在项目的构建中需要安装的比实际看到的六个还要多。  
+
+## 打包和部署
+现代前端的技术栈越来越多，前端项目现在也需要打包。  
+### 为什么需要打包？
+1. 编译 ES6 语法特性，编译 JSX
+2. 整合资源，例如: 图片，Less/Sass
+3. 优化代码体积
+
+现在比较主流的打包方式是使用 webpack (需要单独学习，配置和理解需要时间，在脚手架工具中已经集成的比较好的 webpack 配置了，故而不需要关注打包细节)
+
+### 打包注意事项
+1. 设置 nodejs 环境为 production
+2. 禁用开发时专用代码，比如 logger
+3. 设置应用根路径
