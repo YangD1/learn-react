@@ -157,6 +157,7 @@ class MyComponent extends React.Component {
   )}
 </Mycomponent>
 ```
+<<<<<<< HEAD
 > children 是 React 组件的一个特殊内置属性，`<Comp>xxx</Comp>` 里的 xxx 部分会作为 children 传递给 Comp 组件，如果 xxx 是函数，那么 Comp 里主动调用它去得到结果。
 
 [高阶组件官方文档](https://react.docschina.org/docs/higher-order-components.html)
@@ -197,3 +198,26 @@ function ThemedButton(props) {
 > 如果自己的应用过于复杂那么使用 Redux 这样的状态容器来管理状态更加合适。或者说用到状态容器的大部分情况下都会使用 Redux（暂时）。
 > React 中的 Context API 类似于 Vue 中的[依赖注入](https://cn.vuejs.org/v2/guide/components-edge-cases.html#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5)，当然 Vue 也有相应的状态容器 Vuex。
 
+> children 是 React 组件的一个特殊内置属性，<Comp>xxx</Comp> 里的 xxx 部分会作为 children 传递给 Comp 组件，如果 xxx 是函数，那么 Comp 里主动调用它去得到结果。
+
+[高阶组件官方文档](https://react.docschina.org/docs/higher-order-components.html)
+
+## 使用脚手架工具创建 React App
+常见的脚手架工具：  
+1. Create React App - 官方（整合： Babel, Webpack, Testing, ESLint）
+2. Codesandbox - 在线开发平台（具有线上的运行环境）
+3. Rekit (整合：包含了 create-react-app 所包含的内容，以及：Redux, React Router, Less/ Scss,  Feature Oriented Architecture, Dedicated IDE)
+
+### 为什么要使用脚手架工具
+因为现代的web开发越来越复杂，开发一个项目需要依赖的包也比较多  
+  
+  
+例如一个React项目需要有：
+1. React - UI开发
+2. Redux - 状态管理
+3. React/Router - 路由管理
+4. Babel - 兼容
+5. Webpack - 打包
+6. ESLint - 语法检查
+
+每个包都有一定的生态圈，在项目的构建中需要安装的比实际看到的六个还要多。  
