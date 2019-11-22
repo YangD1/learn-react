@@ -234,3 +234,116 @@ function ThemedButton(props) {
 1. 设置 nodejs 环境为 production
 2. 禁用开发时专用代码，比如 logger
 3. 设置应用根路径
+
+# Redux 状态管理框架
+-> [官方文档](https://redux.js.org/introduction/getting-started)  
+基于 Flux（之前主流的状态管理框架） 的设计模式  
+原理：将 state 转换成 DOM 结构  
+Redux 将状态移到组件之外，放在一个唯一的 Store 中(就跟俺之前接触的 vuex 一样), 管理全局的组件状态。  
+Redux 管理全局组件让组件通信变的更加容易(不然需要通过 props 一层层传递，非常麻烦)。  
+组件与 Redux 交互的过程是一个单向数据流的过程。
+
+## Redux 特性
+### Single Source of Truth
+Redux 维护一个唯一的全局 Store (状态库)
+### 可预测性
+```
+state + action = new state
+```
+### 纯函数去更新 Store
+通过 action 去更新(产生新的)数据  
+函数的输出结果取决于输入的参数，函数的内部不依赖任何外部参数和资源
+
+
+## 理解 Store
+创建一个store: 
+```
+const state = createStore(reducer)
+```
+这里的`reducer`是一个纯函数  
+  
+store 有三个方法:
+1. getState()  - 得到当前数据
+2. dispatch(action) - 事件触发
+3. subscribe(listener) - 监听变化
+
+![avatar](./images/WX20191121-163237.png)
+
+## 理解 action
+描述了一种行为的数据结构  
+
+## 理解 reducer
+一般一个 reducer 函数有两个参数，一个(之前的状态或者)初始值，一个 action，之后在 reducer 内部处理数据，之后更新 state. state 更新后, view 发生改变。
+
+![avatar](./images/WX20191121-163809.png)  
+单向数据流  
+一个新的状态( state 变化)一定是由一个 action 开始的。
+```
+(state, action) => new state
+```
+发生数据异常便可以直接由action定位问题。
+
+## 理解 combineReducers
+一个 Redux 的工具函数，可以接受多个 reducer 作为参数，之后输出一个封装过的函数  
+eg: 
+```js
+// todos.js
+export default function todos(state = [], action) {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return state.concat([action.text])
+    default:
+      return state
+  }
+}
+```
+```js
+// counter.js
+export default function counter(state = 0, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return state + 1
+    case 'DECREMENT':
+      return state - 1
+    default:
+      return state
+  }
+}
+```
+```js
+// use combineReducers
+import { combineReducers } from 'redux'
+import todos from './todos'
+import counter from './counter'
+
+export default combineReducers({
+  todos,
+  counter
+})
+```
+
+## 理解 bindActionCreators
+只有经过 dispatch 出去的 action 才会影响到 state  
+帮助 action 函数自动实现 dispatch 功能  
+```js
+bindActionCreators(actionCreators, dispatch)
+```
+否则常规情况下，需要对 action 对象做一次 dispatch 处理, 像下面这样
+```js
+// 用例1
+function addTodoWithDispatch(text) {
+  const action = {
+    type: 'ADD_TODO',
+    text
+  }
+  dispatch(action)
+}
+
+// 用例2
+dispatch(addTodo(text))
+dispatch(completeTodo(index))
+
+// 用例3
+const boundAddTodo = text => dispatch(addTodo(text))
+const boundCompleteTodo = index => dispatch(completeTodo(text))
+```
