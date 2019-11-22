@@ -325,6 +325,7 @@ export default combineReducers({
 ## 理解 bindActionCreators
 只有经过 dispatch 出去的 action 才会影响到 state  
 帮助 action 函数自动实现 dispatch 功能  
+注意这里的 dispatch 来自于createStore()方法所构建的store对象中的方法（诸如 getStaet() 也是来自于这个对象中）,[具体参阅](https://cn.redux.js.org/docs/api/Store.html)。
 ```js
 bindActionCreators(actionCreators, dispatch)
 ```
@@ -347,3 +348,14 @@ dispatch(completeTodo(index))
 const boundAddTodo = text => dispatch(addTodo(text))
 const boundCompleteTodo = index => dispatch(completeTodo(text))
 ```
+
+## 在 React 中使用 Redux
+[课程地址](https://time.geekbang.org/course/detail/100-9451)  
+[Redux 官方文档指引](https://redux.js.org/basics/usage-with-react)
+
+Redux 独立于UI框架之外，没有依赖关系，但是跟React配合使用更加常见，本身可以独立运行。  
+### connect 的工作原理：高阶组件（设计模式）
+组件和Redux的交互流程:
+![avatar](./images/WX20191122-143428.png)
+最左侧是组件树  
+
