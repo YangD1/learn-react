@@ -1,6 +1,7 @@
 # 【极客时间】React实战进阶45讲
 
-地址：[极客时间](https://time.geekbang.org/course/intro/100)
+地址：[极客时间](https://time.geekbang.org/course/intro/100)  
+课程源码地址：[codesandbox](https://codesandbox.io/s/6n20nrzlxz)
 
 ## 初步理解 React 组件
 ### 以组件化的方式思考UI的构建
