@@ -1,3 +1,9 @@
+## 学习React课程实践的项目内容
+### 额外相关的安装包（使用create-react-app创建的项目）：
+```
+node-scss
+```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

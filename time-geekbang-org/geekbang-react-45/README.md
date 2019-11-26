@@ -360,3 +360,27 @@ Redux 独立于UI框架之外，没有依赖关系，但是跟React配合使用�
 ![avatar](./images/WX20191122-143428.png)
 最左侧是组件树  
 
+## 理解异步 Action，Redux 中间件
+[课程地址](https://time.geekbang.org/course/detail/100-9453)
+Redux 异步请求流程
+![avatar](./images/QQ20191125-141443.png)
+从View触出发，发生事件发送请求，触发actions...中间件截获预处理发送请求到api...之后进入到store->view的流程。
+```
+(state, action) => new state
+- Store
+- Actions
+- Reducer
+- View
+- Middleware
+```
+
+
+### Redux 中间件（Middleware）
+步骤
+1. 截获 action
+2. 发出 action
+
+
+### 小结
+1. 异步 action 不是特殊 action，而是多个同步 action 的组合使用
+2. 中间件在 dispatcher 中截获 action 做特殊处理

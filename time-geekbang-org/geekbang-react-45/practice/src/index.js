@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Counter from './counter/index'
+import './css/index.scss';
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,8 +14,8 @@ class App extends React.Component {
   render(){
     return (
       <Router>
-        <div>
-          <nav>
+        <div className="app">
+          <nav className="header">
             <ul>
               <li>
                 <Link to="/">Home</Link>
