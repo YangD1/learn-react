@@ -2,6 +2,8 @@
 
 地址：[极客时间](https://time.geekbang.org/course/intro/100)  
 课程源码地址：[codesandbox](https://codesandbox.io/s/6n20nrzlxz)
+相关链接：
+- [Redux 官方文档（中文）](https://cn.redux.js.org/)
 
 ## 初步理解 React 组件
 ### 以组件化的方式思考UI的构建
@@ -361,10 +363,14 @@ Redux 独立于UI框架之外，没有依赖关系，但是跟React配合使用�
 最左侧是组件树  
 
 ## 理解异步 Action，Redux 中间件
-[课程地址](https://time.geekbang.org/course/detail/100-9453)
+[课程地址](https://time.geekbang.org/course/detail/100-9453)  
+[官方文档(中文)](https://cn.redux.js.org/docs/advanced/AsyncActions.html)  
 Redux 异步请求流程
 ![avatar](./images/QQ20191125-141443.png)
-从View触出发，发生事件发送请求，触发actions...中间件截获预处理发送请求到api...之后进入到store->view的流程。
+学习手记：
+![avatar](./images/AsynchronousAction&middleware.png)
+
+从View出发，发生事件发送请求，触发actions...中间件截获预处理发送请求到api...之后进入到store->view的流程。
 ```
 (state, action) => new state
 - Store
@@ -373,13 +379,13 @@ Redux 异步请求流程
 - View
 - Middleware
 ```
+一个同步的 action 的流程是：action 由 dispatch 发送给 store , state 会被立即更新  
+一个异步的 action 的变化是：action 可能不再是一个 JavaScript 对象，而是一个Ajax请求，之后由dispatch的中间件去截获并处理，再发送到store
 
 
 ### Redux 中间件（Middleware）
-步骤
-1. 截获 action
-2. 发出 action
-
+1. 截获 action (未被处理的 action)
+2. 发出 action (处理过的 action)
 
 ### 小结
 1. 异步 action 不是特殊 action，而是多个同步 action 的组合使用
