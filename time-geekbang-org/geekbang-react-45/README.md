@@ -390,3 +390,30 @@ Redux 异步请求流程
 ### 小结
 1. 异步 action 不是特殊 action，而是多个同步 action 的组合使用
 2. 中间件在 dispatcher 中截获 action 做特殊处理
+
+## 如何组织 Redux Action 的问题
+1. 所有 Action 放一个文件，会无限扩展
+2. Action，Reducer分开，实现业务逻辑时需要来回切换
+3. 系统中有哪些 Action 不够直观
+
+[课程预习内容](https://medium.com/@nate_wang/a-new-approach-for-managing-redux-actions-91c26ce8b5da)  
+one action one file pattern:
+- Put one action in one file and put the acorresponding reducer into the same file.
+(use the action name as the  file name. only contains one action)  
+看起来很高端其实只要记住：one action one file pattern 这种设计模式就好了  
+
+![avatar](./images/WX20191128-155056.png)
+[项目地址](https://github.com/reduxjs/redux/blob/master/examples/todomvc/src/actions/index.js)
+这个图可以看到官方例子将所有的 action 放在了 actions 目录下。这样不利于程序的扩展和维护。  
+推荐的做法是：单个 action 和 reducer 放在同一个文件，也就是上面英文文章中所提到的 one action one file pattern, 具体如图：
+![avatar](./images/WX20191128-155548.png)
+不同的小文件来描述不同的业务逻辑，一个总的 actions / reducers 从小文件中提取出来。
+  
+这样做的好处：
+1. 易于开发：不用在 action 和 reducer 文件间来回切换
+2. 易于维护：每个 action 文件都很小，容易理解
+3. 易于测试：每个业务逻辑只需对应一个测试文件
+4. 易于理解：文件名就是 action 名字，文件列表就是 action 列表
+> 这个概念有点类似于我在使用 nuxtjs 中，其文档所提到的模块方式的状态树 [NuxtJS 状态树](https://zh.nuxtjs.org/guide/vuex-store#%E4%BD%BF%E7%94%A8%E7%8A%B6%E6%80%81%E6%A0%91)
+
+课程中给了一个rekit构建的todo项目：[项目地址](https://github.com/supnate/rekit-todomvc)
