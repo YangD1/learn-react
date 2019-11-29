@@ -417,3 +417,65 @@ one action one file pattern:
 > 这个概念有点类似于我在使用 nuxtjs 中，其文档所提到的模块方式的状态树 [NuxtJS 状态树](https://zh.nuxtjs.org/guide/vuex-store#%E4%BD%BF%E7%94%A8%E7%8A%B6%E6%80%81%E6%A0%91)
 
 课程中给了一个rekit构建的todo项目：[项目地址](https://github.com/supnate/rekit-todomvc)
+
+## 理解不可变数据( immutable data )
+不可变数据是不可修改的，如果需要改变它则需要复制创建一个新的数据，redux store 每个节点都是不可变数据
+### 为何需要不可变数据
+1. 性能优化  
+引用比较，当由 action 触发的状态发生改变时，如果比较新的 state和之前的state不是同一个引用（比如不是一个内存地址）就知道内容发生了改变，便会触发更新，这样性能比遍历比较差异要来的快的多。
+2. 易于调试和跟踪  
+由于在触发更新时，会产生新的状态，所以可以很方便的比较两个状态的diff，从而达成易于调试和跟踪的效果
+3. 易于推测
+
+### 如何操作不可变数据
+1. 原生写法：`{...}` (展开语法(Spread syntax))，`Object.assign`
+2. `immutability-helper` 工具类
+3. `immer` 性能不如上面两种
+
+原生写法
+```js
+const state = { filter: 'completed', todos: [
+  'Learn React'
+]};
+
+const newState = {...state, todos: [
+  ...state.todos,
+  'Learn Redux'
+]};
+
+const newState2 = Object.assing({}, state, { todos:
+[
+  ...state.todos,
+  'Learn Redux'
+]});
+```
+
+immutability-helper
+```js
+import update from 'immutabillty-helper';
+
+const state = { filter: 'completed', todos: [
+  'Learn React'
+]};
+
+const newState = update(state, { todos: {$push: ['Learn Redux']}})
+```
+
+immer
+```js
+import produce from 'immer';
+
+const state = { filter: 'completed', todos: [
+  'Learn React'
+]};
+
+const newState = produce(state, draftState => {
+  draftState.todos.push('Learn Redux.');
+})
+```
+
+
+## 路由不只是页面切换，更是代码组织方式
+1. 单页应用更需要进行页面切换
+2. 通过 URL 可以定位到页面
+3. 更有语义的组织资源
