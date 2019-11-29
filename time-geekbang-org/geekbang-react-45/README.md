@@ -479,3 +479,79 @@ const newState = produce(state, draftState => {
 1. 单页应用更需要进行页面切换
 2. 通过 URL 可以定位到页面
 3. 更有语义的组织资源
+
+![avatar](./images/react-router.png)  
+router 只会更新组件容器的内容
+
+react router 的基本实现，我在实践项目中也有写，官网的例子也很清晰，不作摘录了：
+[React Router](https://reacttraining.com/react-router/web/guides/quick-start)
+
+### React Router 特性
+1. 声明式路由
+2. 动态路由
+
+### 三种路由实现方式
+1. URL 路径
+2. hash 路由(支持低版本的浏览器 {HashRouter as Router} form react-router-dom)
+3. 内存路由（不反应到url上 MemoryRouter from 'react-router'）
+
+### 基于路由配置进行资源组织
+1. 实现业务逻辑的松耦合
+2. 易于扩展，重构和维护
+3. 路由层面实现 Lazy load
+
+### React Router API
+1. `<Link>`: 普通链接，不会触发浏览器刷新
+```js
+import { Link } from 'react-router-dom'
+<Link to="/about">About</Link>
+```
+2. `<NavLinkl>`: 类似 Link 但是会添加当前选中状态
+```js
+<NavLink
+  to="/faq"
+  activeClassName="selected"
+>FAQs</NavLink>
+```
+3. `<Prompt>`: 满足条件时提示用户是否离开当前页面
+```js
+import { Prompt } from 'react-router'
+// when 表示什么时候需要提示
+<Prompt
+  when={formIsHalfFilledOut}
+  message="Are you sure you want to leave?"
+>
+```
+4. `<Redirect>`: 重定向当前页面，例如登录判断
+```js
+import { Route, Redirect } from 'react-router'
+// 典型的场景例如登录之后重定向
+<Route exact path="/" render={
+  loggedIn ? (
+    <Redirect to="/dashboard" />
+  ) : (
+    <PublicHomePage />
+  )
+}/>
+```
+5. `<Router>`: 路由配置的核心标记，路径匹配时显示对应组件
+```js
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
+<Router>
+  <div>
+    <Route exact path="/" component={Home} />
+    <Route path="/news" component={NewsFeed} />
+  </div>
+</Router>
+```
+6. `<Switch>`: 只显示第一个匹配的路由
+import { Switch, route } from 'react-router'
+```js
+<Switch>
+  <Route exact path="/" component={Home} />
+  <Route path="/" component={About} />
+  <Route path="/" component={User} />
+  <Route component={NoMatch} />
+</Switch>
+```
