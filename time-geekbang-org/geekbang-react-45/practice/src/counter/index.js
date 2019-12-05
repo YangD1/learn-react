@@ -33,7 +33,7 @@ function minusOne() {
   return { type: "MINUS_ONE" };
 }
 
-export class Counter extends React.Component {
+export class Counter extends React.PureComponent {
   render() {
     const { count, plusOne, minusOne } = this.props;
     return (

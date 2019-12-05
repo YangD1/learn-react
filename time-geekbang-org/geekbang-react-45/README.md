@@ -555,3 +555,61 @@ import { Switch, route } from 'react-router'
   <Route component={NoMatch} />
 </Switch>
 ```
+
+## 参数定义，嵌套路由的使用场景
+1. 通过 URL 传递参数：`<Route path="/topic/:id" ... />`
+1. 如何获取参数：`this.props.match.params`
+1. 用正则表达式的方式做模糊匹配： https://github.com/pillarjs/path-to-regexp
+  
+[查看示例](./practice/src/router-params)
+
+> 参数路由和嵌套路由的用法之前在vue-router体验过了，其实不用多做额外的理解，只需要参考相关文档在应当使用的场景，进行使用即可 [中文文档](https://react-guide.github.io/react-router-cn/)
+
+## UI 组件库对比和介绍：Ant Design / Material UI / Semantic UI
+- Ant.Design: https://ant.design/index.cn
+- Material UI: https://material-ui.com/
+- Semantic UI: https://react.semantic-ui.com/
+
+## Next.js 创建 React 同构应用
+> 先看到这个标题肯定知道NextJS是干嘛的，但是同构的概念还是要深入理解的
+
+### 什么是同构应用
+![avatar](./images/WX20191205-160624.png)
+
+### 创建页面
+> 规则和之前使用的NuxtJS相同（这里先入为主，知道NuxtJS是效仿NextJS的设计模式作出的项目）
+1. 页面就是 pages 目录下的一个组件
+2. static 目录映射静态文件（例如：图片，视频资料，样式等等静态资源文件）,静态资源访问链接：`/static/resouse.jpg`
+3. page 具有特殊静态方法 `getInitialProps`（nextjs 添加到 react component 上的方法，可以用来获取参数等等操作）
+
+路由的使用:`<Link href="/about">About</Link>`
+
+### 在页面中使用其他 React 组件
+1. 页面也是标准的 node 模块，可使用其他 React 组件（也可以像传统组件那样开发）
+2. 页面会针对性打包，仅包含其引入的组件
+
+### 使用 Link 实现同构路由
+1. 使用 "nuxt/link" 定义链接
+2. 点击链接时页面不会刷新
+3. 使用 prefetch 预加载目标资源：`<Link href="/about" prefetch></Link>`
+4. 使用 replace 属性替换 URL，访问将刷新浏览器的 history（页面就不可以回退）
+
+### 动态加载页面
+```js
+import dynamic from 'next/dynamic'
+
+const DynamicComponentWithCustomLoading = dynamic(
+  import('../components/hello2'),
+  {
+    loading: () => <p>...</p>
+  }
+)
+
+export default () =>
+  <div>
+    <Header />
+    <DynamicComponentWithCustomLoading />
+    <p>HOME PAGE is here!</p>
+  </div>
+```
+

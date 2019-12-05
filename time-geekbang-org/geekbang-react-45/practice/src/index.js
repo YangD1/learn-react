@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Counter from './counter/index'
+import RouterParams from './router-params/index'
 import './css/index.scss';
 
 import {
@@ -21,7 +22,10 @@ class App extends React.Component {
                 <Link to="/">Home</Link>
               </li>
               <li>
-                <Link to="/counter">counter</Link>
+                <Link to="/counter">Counter</Link>
+              </li>
+              <li>
+                <Link to="/router-params">Router-params</Link>
               </li>
             </ul>
           </nav>
@@ -29,10 +33,18 @@ class App extends React.Component {
           {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
           <Switch>
+            <Route path="/router-params">
+              <RouterParams />
+            </Route>
             <Route path="/counter">
               <Counter />
             </Route>
             <Route path="/">
+              <div>
+                <h1>
+                  HOME
+                </h1>
+              </div>
             </Route>
           </Switch>
         </div>
