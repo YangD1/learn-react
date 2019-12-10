@@ -5,6 +5,71 @@
 相关链接：
 - [Redux 官方文档（中文）](https://cn.redux.js.org/)
 
+- [【极客时间】React实战进阶45讲](#%e6%9e%81%e5%ae%a2%e6%97%b6%e9%97%b4react%e5%ae%9e%e6%88%98%e8%bf%9b%e9%98%b645%e8%ae%b2)
+  - [初步理解 React 组件](#%e5%88%9d%e6%ad%a5%e7%90%86%e8%a7%a3-react-%e7%bb%84%e4%bb%b6)
+    - [以组件化的方式思考UI的构建](#%e4%bb%a5%e7%bb%84%e4%bb%b6%e5%8c%96%e7%9a%84%e6%96%b9%e5%bc%8f%e6%80%9d%e8%80%83ui%e7%9a%84%e6%9e%84%e5%bb%ba)
+    - [什么是React组件](#%e4%bb%80%e4%b9%88%e6%98%afreact%e7%bb%84%e4%bb%b6)
+    - [React组件的类型](#react%e7%bb%84%e4%bb%b6%e7%9a%84%e7%b1%bb%e5%9e%8b)
+    - [React 组件的创建原则](#react-%e7%bb%84%e4%bb%b6%e7%9a%84%e5%88%9b%e5%bb%ba%e5%8e%9f%e5%88%99)
+  - [什么是 JSX](#%e4%bb%80%e4%b9%88%e6%98%af-jsx)
+  - [声明周期和使用场景](#%e5%a3%b0%e6%98%8e%e5%91%a8%e6%9c%9f%e5%92%8c%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af)
+    - [constructor](#constructor)
+    - [getDerivedStateFromProps*(16.3 新引入)](#getderivedstatefromprops163-%e6%96%b0%e5%bc%95%e5%85%a5)
+    - [componentDidMount](#componentdidmount)
+    - [componentWillUnmount](#componentwillunmount)
+    - [getSnapshotBeforeUpdate](#getsnapshotbeforeupdate)
+    - [componentDidUpdate](#componentdidupdate)
+    - [shouldComponentUpdate](#shouldcomponentupdate)
+  - [理解 Virtual DOM 及 Key 属性的作用](#%e7%90%86%e8%a7%a3-virtual-dom-%e5%8f%8a-key-%e5%b1%9e%e6%80%a7%e7%9a%84%e4%bd%9c%e7%94%a8)
+    - [虚拟 DOM 的两个假设](#%e8%99%9a%e6%8b%9f-dom-%e7%9a%84%e4%b8%a4%e4%b8%aa%e5%81%87%e8%ae%be)
+  - [组件复用的另外两种形式：高阶组件（HOC）和函数（function）作为子组件](#%e7%bb%84%e4%bb%b6%e5%a4%8d%e7%94%a8%e7%9a%84%e5%8f%a6%e5%a4%96%e4%b8%a4%e7%a7%8d%e5%bd%a2%e5%bc%8f%e9%ab%98%e9%98%b6%e7%bb%84%e4%bb%b6hoc%e5%92%8c%e5%87%bd%e6%95%b0function%e4%bd%9c%e4%b8%ba%e5%ad%90%e7%bb%84%e4%bb%b6)
+    - [高阶组件](#%e9%ab%98%e9%98%b6%e7%bb%84%e4%bb%b6)
+    - [函数作为子组件](#%e5%87%bd%e6%95%b0%e4%bd%9c%e4%b8%ba%e5%ad%90%e7%bb%84%e4%bb%b6)
+  - [理解新的Context API (React 16.3)](#%e7%90%86%e8%a7%a3%e6%96%b0%e7%9a%84context-api-react-163)
+  - [使用脚手架工具创建 React App](#%e4%bd%bf%e7%94%a8%e8%84%9a%e6%89%8b%e6%9e%b6%e5%b7%a5%e5%85%b7%e5%88%9b%e5%bb%ba-react-app)
+    - [为什么要使用脚手架工具](#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e4%bd%bf%e7%94%a8%e8%84%9a%e6%89%8b%e6%9e%b6%e5%b7%a5%e5%85%b7)
+  - [打包和部署](#%e6%89%93%e5%8c%85%e5%92%8c%e9%83%a8%e7%bd%b2)
+    - [为什么需要打包？](#%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e6%89%93%e5%8c%85)
+    - [打包注意事项](#%e6%89%93%e5%8c%85%e6%b3%a8%e6%84%8f%e4%ba%8b%e9%a1%b9)
+  - [Redux 状态管理框架](#redux-%e7%8a%b6%e6%80%81%e7%ae%a1%e7%90%86%e6%a1%86%e6%9e%b6)
+  - [Redux 特性](#redux-%e7%89%b9%e6%80%a7)
+    - [Single Source of Truth](#single-source-of-truth)
+    - [可预测性](#%e5%8f%af%e9%a2%84%e6%b5%8b%e6%80%a7)
+    - [纯函数去更新 Store](#%e7%ba%af%e5%87%bd%e6%95%b0%e5%8e%bb%e6%9b%b4%e6%96%b0-store)
+  - [理解 Store](#%e7%90%86%e8%a7%a3-store)
+  - [理解 action](#%e7%90%86%e8%a7%a3-action)
+  - [理解 reducer](#%e7%90%86%e8%a7%a3-reducer)
+  - [理解 combineReducers](#%e7%90%86%e8%a7%a3-combinereducers)
+  - [理解 bindActionCreators](#%e7%90%86%e8%a7%a3-bindactioncreators)
+  - [在 React 中使用 Redux](#%e5%9c%a8-react-%e4%b8%ad%e4%bd%bf%e7%94%a8-redux)
+    - [connect 的工作原理：高阶组件（设计模式）](#connect-%e7%9a%84%e5%b7%a5%e4%bd%9c%e5%8e%9f%e7%90%86%e9%ab%98%e9%98%b6%e7%bb%84%e4%bb%b6%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f)
+  - [理解异步 Action，Redux 中间件](#%e7%90%86%e8%a7%a3%e5%bc%82%e6%ad%a5-actionredux-%e4%b8%ad%e9%97%b4%e4%bb%b6)
+    - [Redux 中间件（Middleware）](#redux-%e4%b8%ad%e9%97%b4%e4%bb%b6middleware)
+    - [小结](#%e5%b0%8f%e7%bb%93)
+  - [如何组织 Redux Action 的问题](#%e5%a6%82%e4%bd%95%e7%bb%84%e7%bb%87-redux-action-%e7%9a%84%e9%97%ae%e9%a2%98)
+  - [理解不可变数据( immutable data )](#%e7%90%86%e8%a7%a3%e4%b8%8d%e5%8f%af%e5%8f%98%e6%95%b0%e6%8d%ae-immutable-data)
+    - [为何需要不可变数据](#%e4%b8%ba%e4%bd%95%e9%9c%80%e8%a6%81%e4%b8%8d%e5%8f%af%e5%8f%98%e6%95%b0%e6%8d%ae)
+    - [如何操作不可变数据](#%e5%a6%82%e4%bd%95%e6%93%8d%e4%bd%9c%e4%b8%8d%e5%8f%af%e5%8f%98%e6%95%b0%e6%8d%ae)
+  - [路由不只是页面切换，更是代码组织方式](#%e8%b7%af%e7%94%b1%e4%b8%8d%e5%8f%aa%e6%98%af%e9%a1%b5%e9%9d%a2%e5%88%87%e6%8d%a2%e6%9b%b4%e6%98%af%e4%bb%a3%e7%a0%81%e7%bb%84%e7%bb%87%e6%96%b9%e5%bc%8f)
+    - [React Router 特性](#react-router-%e7%89%b9%e6%80%a7)
+    - [三种路由实现方式](#%e4%b8%89%e7%a7%8d%e8%b7%af%e7%94%b1%e5%ae%9e%e7%8e%b0%e6%96%b9%e5%bc%8f)
+    - [基于路由配置进行资源组织](#%e5%9f%ba%e4%ba%8e%e8%b7%af%e7%94%b1%e9%85%8d%e7%bd%ae%e8%bf%9b%e8%a1%8c%e8%b5%84%e6%ba%90%e7%bb%84%e7%bb%87)
+    - [React Router API](#react-router-api)
+  - [参数定义，嵌套路由的使用场景](#%e5%8f%82%e6%95%b0%e5%ae%9a%e4%b9%89%e5%b5%8c%e5%a5%97%e8%b7%af%e7%94%b1%e7%9a%84%e4%bd%bf%e7%94%a8%e5%9c%ba%e6%99%af)
+  - [UI 组件库对比和介绍：Ant Design / Material UI / Semantic UI](#ui-%e7%bb%84%e4%bb%b6%e5%ba%93%e5%af%b9%e6%af%94%e5%92%8c%e4%bb%8b%e7%bb%8dant-design--material-ui--semantic-ui)
+  - [Next.js 创建 React 同构应用](#nextjs-%e5%88%9b%e5%bb%ba-react-%e5%90%8c%e6%9e%84%e5%ba%94%e7%94%a8)
+    - [什么是同构应用](#%e4%bb%80%e4%b9%88%e6%98%af%e5%90%8c%e6%9e%84%e5%ba%94%e7%94%a8)
+    - [创建页面](#%e5%88%9b%e5%bb%ba%e9%a1%b5%e9%9d%a2)
+    - [在页面中使用其他 React 组件](#%e5%9c%a8%e9%a1%b5%e9%9d%a2%e4%b8%ad%e4%bd%bf%e7%94%a8%e5%85%b6%e4%bb%96-react-%e7%bb%84%e4%bb%b6)
+    - [使用 Link 实现同构路由](#%e4%bd%bf%e7%94%a8-link-%e5%ae%9e%e7%8e%b0%e5%90%8c%e6%9e%84%e8%b7%af%e7%94%b1)
+    - [动态加载页面](#%e5%8a%a8%e6%80%81%e5%8a%a0%e8%bd%bd%e9%a1%b5%e9%9d%a2)
+  - [使用 Jest \ Enzyme 等工具进行单元测试](#%e4%bd%bf%e7%94%a8-jest--enzyme-%e7%ad%89%e5%b7%a5%e5%85%b7%e8%bf%9b%e8%a1%8c%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95)
+    - [单元测试涉及的工具](#%e5%8d%95%e5%85%83%e6%b5%8b%e8%af%95%e6%b6%89%e5%8f%8a%e7%9a%84%e5%b7%a5%e5%85%b7)
+  - [常用开发调试工具：ESLint、Prettier、React DevTool、Redux DevTool](#%e5%b8%b8%e7%94%a8%e5%bc%80%e5%8f%91%e8%b0%83%e8%af%95%e5%b7%a5%e5%85%b7eslintprettierreact-devtoolredux-devtool)
+  - [前端项目的理想架构：可维护、可扩展、可测试、易开发、易构建](#%e5%89%8d%e7%ab%af%e9%a1%b9%e7%9b%ae%e7%9a%84%e7%90%86%e6%83%b3%e6%9e%b6%e6%9e%84%e5%8f%af%e7%bb%b4%e6%8a%a4%e5%8f%af%e6%89%a9%e5%b1%95%e5%8f%af%e6%b5%8b%e8%af%95%e6%98%93%e5%bc%80%e5%8f%91%e6%98%93%e6%9e%84%e5%bb%ba)
+    - [拆分复杂度（1）：按领域模型（feature）组织代码，降低耦合度](#%e6%8b%86%e5%88%86%e5%a4%8d%e6%9d%82%e5%ba%a61%e6%8c%89%e9%a2%86%e5%9f%9f%e6%a8%a1%e5%9e%8bfeature%e7%bb%84%e7%bb%87%e4%bb%a3%e7%a0%81%e9%99%8d%e4%bd%8e%e8%80%a6%e5%90%88%e5%ba%a6)
+    - [拆分复杂度（2）：如何组织 component、action 和 reducer](#%e6%8b%86%e5%88%86%e5%a4%8d%e6%9d%82%e5%ba%a62%e5%a6%82%e4%bd%95%e7%bb%84%e7%bb%87-componentaction-%e5%92%8c-reducer)
+
 ## 初步理解 React 组件
 ### 以组件化的方式思考UI的构建
 用react来描述一个html页面，将UI组织成组件树的形式
@@ -238,7 +303,7 @@ function ThemedButton(props) {
 2. 禁用开发时专用代码，比如 logger
 3. 设置应用根路径
 
-# Redux 状态管理框架
+## Redux 状态管理框架
 -> [官方文档](https://redux.js.org/introduction/getting-started)  
 基于 Flux（之前主流的状态管理框架） 的设计模式  
 原理：将 state 转换成 DOM 结构  
@@ -634,3 +699,23 @@ export default () =>
 - React DevTool 调试 React 的 chrome 插件
 - Redux DevTool  调试 React 的 chrome 插件
 
+## 前端项目的理想架构：可维护、可扩展、可测试、易开发、易构建
+### 拆分复杂度（1）：按领域模型（feature）组织代码，降低耦合度
+![](./images/2019-12-10-16-45-29.png)
+按照**功能**的方式组织在一个目录下,中间层是加载器，做到高内聚，低耦合，每个功能相互独立，互不影响。
+### 拆分复杂度（2）：如何组织 component、action 和 reducer
+![](./images/2019-12-10-16-55-39.png)  
+
+组件的引入：
+![](./images/2019-12-10-16-57-13.png)
+
+组件样式的引入：
+![](./images/2019-12-10-16-58-06.png)
+
+![](./images/2019-12-10-17-00-11.png)
+一个功能对应一个文件，文件中只包含一个 action 和一个 reducer
+![](./images/2019-12-10-17-03-05.png)
+action 文件 和reducer 文件都没有自己的业务逻辑代码，只是纯粹的将所需要的action 和 reducer 提取出来。
+
+常量的管理：
+![](./images/2019-12-10-17-05-28.png)
