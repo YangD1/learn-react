@@ -613,3 +613,24 @@ export default () =>
   </div>
 ```
 
+## 使用 Jest \ Enzyme 等工具进行单元测试
+1. React 应用很少需要访问浏览器 API
+2. 虚拟 DOM 可以在 NodeJS 环境运行和测试
+3. Redux 隔离了状态管理，纯数据层单元测试
+
+### 单元测试涉及的工具
+1. Jest: Facebook 开源的 JS 单元测试框架
+2. JS DOM: 浏览器环境的 NodeJS 模拟
+3. Enzyme: React 组件渲染和测试
+4. nock: **模拟** HTTP 请求
+5. sinon: 函数模拟和调用跟踪
+6. istanbul: 单元测试覆盖率
+
+> 脚手架和框架都自带了一定的测试工具，只需要了解各个测试工具的用法来进行单元测试
+
+## 常用开发调试工具：ESLint、Prettier、React DevTool、Redux DevTool
+- ESLint 语法风格检查
+- Prettier 格式化代码工具(可以自动修改风格)
+- React DevTool 调试 React 的 chrome 插件
+- Redux DevTool  调试 React 的 chrome 插件
+
