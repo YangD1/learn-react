@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import CounterComp from './counter/index';
 import RouterParams from './router-params/index';
+import ReduxTest from './redux-test/index';
 import './css/index.scss';
 
 
@@ -24,6 +25,9 @@ const App = () => (
           </li>
           <li>
             <Link to="/router-params">Router-params</Link>
+          </li>
+          <li>
+            <Link to="/redux-test">Redux-test</Link>
           </li>
         </ul>
       </nav>
@@ -43,6 +47,9 @@ const App = () => (
               HOME
             </h1>
           </div>
+        </Route>
+        <Route>
+          <ReduxTest />
         </Route>
       </Switch>
     </div>

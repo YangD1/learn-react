@@ -1,5 +1,5 @@
 {
   "pasteImage.path": "${currentFileDir}/images",
   "pasteImage.forceUnixStyleSeparator": true,
-  "pasteImage.prefix": "./images/"
+  "pasteImage.prefix": "./"
 }
