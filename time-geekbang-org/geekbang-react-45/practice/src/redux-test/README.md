@@ -1,8 +1,24 @@
 # Redux 练习
-参考学习资料：
+- [Redux 练习](#redux-%e7%bb%83%e4%b9%a0)
+  - [声明：](#%e5%a3%b0%e6%98%8e)
+  - [参考：](#%e5%8f%82%e8%80%83)
+  - [快速创建一个 Store](#%e5%bf%ab%e9%80%9f%e5%88%9b%e5%bb%ba%e4%b8%80%e4%b8%aa-store)
+  - [Action Creator](#action-creator)
+  - [store.dispatch()](#storedispatch)
+  - [Reducer](#reducer)
+    - [为什么这个函数叫 Reducer 呢？](#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%99%e4%b8%aa%e5%87%bd%e6%95%b0%e5%8f%ab-reducer-%e5%91%a2)
+  - [纯函数](#%e7%ba%af%e5%87%bd%e6%95%b0)
+  - [store.subscribe()](#storesubscribe)
+  - [Store 的实现](#store-%e7%9a%84%e5%ae%9e%e7%8e%b0)
+
+## 声明：
+用来确认自己把内容看进脑子的“复印”文章，只有少许理解，还有顺便方便自己复习。如果真有人看请移步下方参考的链接文章中学习。
+
+## 参考：
 - [阮一峰Redux入门教程（一）：基本用法](https://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_one_basic_usages.html)
 - [阮一峰Redux入门教程（二）：中间件与异步操作](https://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_two_async_operations.html)
 - [阮一峰Redux入门教程（三）：React-Redux 的用法](https://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_three_react-redux.html)
+
 
 ## 快速创建一个 Store
 快速创建一个对象（Redux 是单例模式创建的 Store）  
