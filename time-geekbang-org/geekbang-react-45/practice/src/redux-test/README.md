@@ -1,15 +1,17 @@
-# Redux 练习
-- [Redux 练习](#redux-%e7%bb%83%e4%b9%a0)
-  - [声明：](#%e5%a3%b0%e6%98%8e)
-  - [参考：](#%e5%8f%82%e8%80%83)
+- [Redux 基础用法](#redux-%e5%9f%ba%e7%a1%80%e7%94%a8%e6%b3%95)
   - [快速创建一个 Store](#%e5%bf%ab%e9%80%9f%e5%88%9b%e5%bb%ba%e4%b8%80%e4%b8%aa-store)
-  - [Action Creator](#action-creator)
+  - [Action](#action)
+    - [Action Creator](#action-creator)
   - [store.dispatch()](#storedispatch)
   - [Reducer](#reducer)
     - [为什么这个函数叫 Reducer 呢？](#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%99%e4%b8%aa%e5%87%bd%e6%95%b0%e5%8f%ab-reducer-%e5%91%a2)
   - [纯函数](#%e7%ba%af%e5%87%bd%e6%95%b0)
   - [store.subscribe()](#storesubscribe)
   - [Store 的实现](#store-%e7%9a%84%e5%ae%9e%e7%8e%b0)
+  - [Reducer 的拆分](#reducer-%e7%9a%84%e6%8b%86%e5%88%86)
+    - [为什么要拆分](#%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e6%8b%86%e5%88%86)
+  - [工作流程（总结）](#%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%a8%8b%e6%80%bb%e7%bb%93)
+- [高级用法](#%e9%ab%98%e7%ba%a7%e7%94%a8%e6%b3%95)
 
 ## 声明：
 用来确认自己把内容看进脑子的“复印”文章，只有少许理解，还有顺便方便自己复习。如果真有人看请移步下方参考的链接文章中学习。
@@ -20,6 +22,7 @@
 - [阮一峰Redux入门教程（三）：React-Redux 的用法](https://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_three_react-redux.html)
 
 
+# Redux 基础用法
 ## 快速创建一个 Store
 快速创建一个对象（Redux 是单例模式创建的 Store）  
 代码：
@@ -37,9 +40,12 @@ const action = {
   payload: 'Learn Redux'
 }
 ```
-**Action** 可以理解为当前发生的事情。改变 **State** 的*唯一*办法。
 
-## Action Creator
+## Action
+**Action** 可以理解为当前发生的事情。改变 **State** 的*唯一*办法。
+![](./images/2019-12-12-15-20-09.png)
+
+### Action Creator
 **View** 要发送多少种消息，就会有多少种 **Action**。为了方便我们使用 **Action Creator** 函数来生成 **Action**。
 
 ```js
@@ -141,7 +147,7 @@ function reducer(state, action) {
 ```
 
 ## store.subscribe()
-使用`store.subscribe()`来设置监听函数，一旦 State 发生变化，就自动执行这个函数(listener)。
+使用`store.subscribe()`来设置监听函数，一旦 State 发生变化，就自动执行这个函数(listener)。(一般比如用来监听组件的render函数)
 ```js
 import { createStore } from 'redux';
 const store = createStore(reducer);
@@ -200,3 +206,96 @@ const createStore = (reducer) => {
   return { getState, dispatch, subscribe };
 };
 ```
+## Reducer 的拆分
+### 为什么要拆分
+Reducer 函数负责生成(新的) State，由于整个应用只有一个 State 对象，包含所有数据，对于大型应用来说，这个 State 必然十分庞大，导致 Reducer 函数也十分庞大。  
+所要用到的方案之前在学习的时候也知道，按照单一的功能进行拆分，不同的函数处理不同的属性，例如本来一个`switch`要`case`一系列毫无关系的`Action`(type)，就可以按照 Action 属性所表示的行为进行函数拆分，不同函数处理不同属性，最终把它们合并成一个大的 Reducer 即可。  
+
+
+例如：
+```js
+const chatReducer = (state = defaultState, action = {}) => {
+  const { type, payload } = action;
+  switch (type) {
+    case ADD_CHAT:
+      return Object.assign({}, state, {
+        chatLog: state.chatLog.concat(payload)
+      });
+    case CHANGE_STATUS:
+      return Object.assign({}, state, {
+        statusMessage: payload
+      });
+    case CHANGE_USERNAME:
+      return Object.assign({}, state, {
+        userName: payload
+      });
+    default: return state;
+  }
+};
+
+// -------- 拆分后再组合成一个Reducer：
+const chatReducer = (state = defaultState, action = {}) => {
+  return {
+    chatLog: chatLog(state.chatLog, action),
+    statusMessage: statusMessage(state.statusMessage, action),
+    userName: userName(state.userName, action)
+  }
+};
+
+```
+这时候就好理解之前课程中学习到的Redux提供的`combineReducers`方法了，这个方法的作用就是将 Reducer 合并成一个大的函数。
+```js
+import { combineReducers } from 'redux';
+
+const chatReducer = combineReducers({
+  chatLog,
+  statusMessage,
+  userName
+})
+
+// 如果 State 的属性名与 Reducer 不同名，就需要像下面这样：
+const reducer = combineReducers({
+  a: doSomethingWithA,
+  b: processB,
+  c: c
+})
+
+// 等同于
+function reducer(state = {}, action) {
+  return {
+    a: doSomethingWithA(state.a, action),
+    b: processB(state.b, action),
+    c: c(state.c, action)
+  }
+}
+
+export default todoApp;
+```
+也可以把所有子 Reducer 放在一个文件中，之后统一引入：
+```js
+import { combineReducers } from 'redux'
+import * as reducers from './reducers'
+
+const reducer = combineReducers(reducers)
+```
+
+## 工作流程（总结）
+![](./images/2019-12-12-16-01-33.png)
+- 首先，用户发出 Action。
+```js
+store.dispatch(action);
+```
+(比如用户点击了组件（view）上的一个按钮，按钮绑定了`click`事件，事件会触发`dispatch`，`dispatch`的参数是我们之前设定好的`action`，`action`是一个具有标识，并且用`type`属性简单说明的普通对象)
+
+- Store 自动调用 Reducer,并且传入两个参数：当前 State（最初的数据）和收到的 Action（需要改变的数据），Reducer 是个纯函数，不会对传入的参数进行修改，所以会返回一个新的 State。
+
+- State 一旦有变化，Store 就会调用监听函数。
+```
+// 设置监听函数，例如组件的 render 函数
+store.subscribe(listener);
+```
+- listener 可以通过 `store.getState()` 得到当前状态。如果用的是 React，这时可以触发重新渲染 View。
+
+
+# 高级用法
+...
