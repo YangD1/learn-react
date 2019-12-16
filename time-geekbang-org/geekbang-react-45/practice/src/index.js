@@ -35,6 +35,9 @@ const App = () => (
       {/* A <Switch> looks through its children <Route>s and
           renders the first one that matches the current URL. */}
       <Switch>
+        <Route path="/redux-test">
+          <ReduxTest />
+        </Route>
         <Route path="/router-params">
           <RouterParams />
         </Route>
@@ -47,9 +50,6 @@ const App = () => (
               HOME
             </h1>
           </div>
-        </Route>
-        <Route>
-          <ReduxTest />
         </Route>
       </Switch>
     </div>

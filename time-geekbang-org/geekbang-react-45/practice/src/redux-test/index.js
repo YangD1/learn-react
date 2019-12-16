@@ -1,31 +1,31 @@
 import { createStore } from "redux";
 import React from "react";
+import { connect } from "react-redux";
+const Counter = ({ value, onIncrement, onDecrement }) => (
+  <div>
+  <h1>{value}</h1>
+  <button onClick={onIncrement}>+</button>
+  <button onClick={onDecrement}>-</button>
+  </div>
+);
 
-let defaultState = 0;
-const action = {
-  type: 'ADD',
-  payload: 1
+const reducer = (state = 0, action) => {
+  switch (action.type) {
+    case 'INCREMENT': return state + 1;
+    case 'DECREMENT': return state - 1;
+    default: return state;
+  }
 };
-function reducer(state = defaultState, action) {
-  // let newState = []
-  switch(action.type){
-    case "ADD":
-      return state + action.payload
-  }
-  // return {...state, ...newState}
-}
-const store = createStore(reducer); // 这里的 createStore 接受一个函数作为参数
 
-store.dispatch(action)
+const store = createStore(reducer);
 
-console.log(store.getState())
+const test = () => (
+    <Counter
+      value={store.getState()}
+      onIncrement={() => store.dispatch({type: 'INCREMENT'})}
+      onDecrement={() => store.dispatch({type: 'DECREMENT'})}
+    />
+  );
 
-export default class ReduxTest extends React.Component {
-  render() {
-    return (
-      <div>
-        <span>{}</span>
-      </div>
-    )
-  }
-}
+export default test;
+store.subscribe(test);
