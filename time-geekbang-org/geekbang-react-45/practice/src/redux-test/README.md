@@ -22,6 +22,13 @@
   - [异步操作的基本思路](#%e5%bc%82%e6%ad%a5%e6%93%8d%e4%bd%9c%e7%9a%84%e5%9f%ba%e6%9c%ac%e6%80%9d%e8%b7%af)
   - [redux-thunk 中间件](#redux-thunk-%e4%b8%ad%e9%97%b4%e4%bb%b6)
   - [redux-promise 中间件](#redux-promise-%e4%b8%ad%e9%97%b4%e4%bb%b6)
+- [React-Redux 的用法](#react-redux-%e7%9a%84%e7%94%a8%e6%b3%95)
+  - [UI 组件](#ui-%e7%bb%84%e4%bb%b6)
+  - [容器组件](#%e5%ae%b9%e5%99%a8%e7%bb%84%e4%bb%b6)
+  - [connect()](#connect)
+  - [mapStateToProps()](#mapstatetoprops)
+  - [mapDispatchToProps()](#mapdispatchtoprops)
+  - [<Provider> 组件](#provider-%e7%bb%84%e4%bb%b6)
 
 ## 声明：
 用来确认自己把内容看进脑子的“复印”文章，只有少许理解，还有顺便方便自己复习。如果真有人看请移步下方参考的链接文章中学习。
@@ -437,3 +444,144 @@ class AsyncApp extends Component {
 第二个 `dispatch` 方法发出的是异步 Action，只有等到操作结束，这个 Action 才会实际发出。注意 `createAction` 的第二个参数必须是一个 Promise 对象（比如这里的 `fetch()`方法）。  
 更详细的内容参考[源码](https://github.com/acdlite/redux-promise/blob/master/src/index.js)
 
+# React-Redux 的用法
+redux本身是可以配合任何js框架使用的，它并不理解react，更不是说为了react而存在。  
+## UI 组件
+React-Redux 将所有组件分成两大类: UI 组件（presentational component）和容器组件（container component）。  
+UI 组件有以下几个特征。
+- 只负责 UI 的呈现，不带有任何业务逻辑
+- 没有状态（即不使用 this.state 这个变量）
+- 所有数据都由参数（this.props）提供
+- 不使用任何 Redux 的 API
+
+下面就是一个 UI 组件的例子。
+```js
+const Title = value => <h1>{value}</h1>
+```
+因为不含有状态，UI 组件又称为"纯组件"，即它纯函数一样，纯粹由参数决定它的值。
+
+## 容器组件
+容器组件的特征恰恰相反
+- 负责管理数据和业务逻辑，不负责 UI 的呈现
+- 带有内部状态
+- 使用 Redux 的 API
+总结一句话：UI 组件负责 UI 的诚信啊，容器组件负责管理数据和逻辑  
+出现了一个组件具有业务逻辑和UI的情况下要进行拆分，结构规则如下：  
+外面是一个容器组件，里面包了一个UI组件。前者负责与外部的通信，将数据传给后者，由后者渲染出视图。  
+React-Redux 规定，所有的 UI 组件都由用户提供，容器组件则是由 React-Redux 自动生成。
+
+## connect()
+React-Redux 提供 `connect` 方法，用于从 UI 组件生成容器组件。  
+```js
+import { connect } from 'react-redux'
+const VisibleTodoList = connect()(TodoList);
+```
+`TodoList` 是 UI 组件，`VisibleTodoList` 就是由 React-Redux 通过 `connect` 方法自动生成的容器组件。  
+上面生成一个没有业务逻辑的容器组件，`connect` 方法接受两个参数：`mapStateToProps`和`mapDispatchToProps`。他妈呢定义了 UI 组件的业务逻辑。前者负责输入逻辑，即将 `state` 映射到 UI 组件的参数（props），后者负责输出逻辑，即将用户对 UI 组件的操作映射成 Action。  
+- 输入逻辑`mapStateToProps`：外部的数据（即 `state` 对象）转换为 UI 组件参数
+- 输出逻辑`mapDispatchToProps`：用户发出的动作如何变为 Action 对象，从 UI 组件传出去  
+最终应该呈现成这样：
+```js
+import { connect } from 'react-redux'
+
+const VisibleTodoList = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodoList)
+```
+
+## mapStateToProps()
+`mapStateToProps`是一个函数，建立一个从（外部的）`state`对象到（UI 组件的）`props` 对象映射关系。  
+作为函数, `mapStateToProps`  执行后应该返回一个对象，里面的每一个键值对就是一个映射。
+```js
+const mapStateToProps = (state) => {
+  return {
+    // 这里的getVisibleTodos 是一个函数用于通过 state 算出 todos 的值
+    todos: getVisibleTodos(state.todos, state.visibilityFilter)
+  }
+}
+```
+**`mapStateToProps`会订阅 Store，每当`state`更新的时候，就会自动执行，重新计算 UI 组件的参数，从而触发 UI 组件的重新渲染。（`connect`方法可以省略`mapStateToProps`参数，那样的话，UI 组件就不会订阅 Store，Store 的更新不会引起 UI 的更新）**  
+
+**`mapStateToProps`的第一个参数总是`state`对象，还可以使用第二个参数，代表容器组件的`props`对象。**
+```js
+// 容器组件的代码
+//    <FilterLink filter="SHOW_ALL">
+//      All
+//    </FilterLink>
+
+const mapStateToProps = (state, ownProps) => {
+  return {
+    active: ownProps.filter === state.visibilityFilter
+  }
+}
+```
+使用`ownProps`作为参数后，如果容器组件的参数发生变化，也会引发 UI 组件重新渲染。
+
+
+## mapDispatchToProps()
+`mapDispatchToProps`是`connect`函数的第二个参数，用来建立 UI 组件的参数到 `store.dispatch` 方法的映射。也就是说，它定义了哪些用户操作应该当作 Action
+,传给 Store。它可以是一个函数，也可以是一个对象。  
+
+如果 `mapDisPatchToProps` 是一个函数，会得到 `dispatch` 和 `ownProps`（容器组件的 `props` 对象）两个参数。
+```js
+const mapDispatchToProps = (
+  dispatch,
+  ownProps
+) => {
+  return {
+    onClick: () => {
+      dispatch({
+        type: 'SET_VISIBILITY_FILTER',
+        filter: ownProps.filter
+      });
+    }
+  };
+}
+```
+上面的`mapDispatchToProps`作为函数，应该返回一个对象，该对象的每个键值对都是一个映射，定义了 UI 组件的参数这样发出 Action。  
+如果`mapDispatchToProps`是一个对象，它的每个键名也是对应 UI 组件的同名参数，键值应该是一个函数，会被当作 Action creator ，返回的 Action 会由 Redux 自动发出。  
+是对象的写法：
+```js
+const mapDispatchToProps = {
+  onClick: (filter) => {
+    type: 'SET_VISIBILITY_FILTER',
+    filter: filter // 这里的filter（键值）属性必须是一个函数
+  };
+}
+```
+
+## <Provider> 组件
+`connect`方法生成容器组件以后，需要让容器组件拿到`state`对象，才能生成 UI 组件的参数。  
+在不使用`<Provider>`组件的情况下，只能像传统单向数据流一样，将`state`对象作为参数，一层一层传入组件。  
+
+React-Redux 提供 `Provider` 组件，可以让容器组件拿到 `state`。
+```js
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import todoApp from './reducers'
+import App from './components/App'
+
+let store = craeteStore(todoApp);
+
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+  document.getElementById('root')
+)
+```
+这里的`<Provider store="store">`组件中所包裹的 UI 都可以拿到 `state`。  
+`store`被放在了 react 的上下文对象`context`上面， 自组件这就可以从 `context` 拿到 `store`。(这里确实很像 react 自己的 context API)
+
+在使用 React-Router 的情况下：
+```js
+const Root = ({ store }) => (
+  <Provider store={store}>
+    <Router>
+      <Route path="/" component={App} />
+    </Router>
+  </Provider>
+);
+```
+将`<Router>`组件标签放在`<Provider>`组件标签的里面。
